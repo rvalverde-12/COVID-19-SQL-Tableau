@@ -95,10 +95,10 @@ ORDER BY
 SELECT 
       SUM(TRY_CONVERT(bigint, total_cases)) AS Total_Cases,
       SUM(TRY_CONVERT(bigint, total_deaths)) AS Total_Deaths,
-         CASE
-             WHEN SUM(TRY_CONVERT(bigint, total_cases)) = 0 THEN NULL
-                  ELSE (SUM(TRY_CONVERT(bigint, total_deaths)) * 100.0) / NULLIF(SUM(TRY_CONVERT(bigint, total_cases)), 0)
-         END AS Death_Percentage
+      CASE
+          WHEN SUM(TRY_CONVERT(bigint, total_cases)) = 0 THEN NULL
+          ELSE (SUM(TRY_CONVERT(bigint, total_deaths)) * 100.0) / NULLIF(SUM(TRY_CONVERT(bigint, total_cases)), 0)
+      END AS Death_Percentage
 FROM
     CovidProject.dbo.CovidDeaths$	
 
@@ -107,11 +107,52 @@ WHERE continent is not null AND date = '04/30/2021'
 ORDER BY 1,2
 ```
 
+### Total Population vs Vaccinations
 
 ``` SQL
 
+SELECT dea.continent, 
+		dea.location,
+		dea.date, 
+		dea.population, 
+		vac.new_vaccinations,
+		SUM(TRY_CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_total_vaccinations
+
+FROM CovidProject.dbo.CovidDeaths$ dea
+
+JOIN CovidProject.dbo.CovidVaccinations$ vac
+
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+
+WHERE dea.continent IS NOT NULL
+
+ORDER BY 2,3
 ```
+### Percentage of People Vaccinated
 
 ``` SQL
+WITH POPvsVAC (continent, location, date, population, new_vaccinations, rolling_total_vaccinations)
 
+AS
+( 
+SELECT dea.continent, 
+		dea.location,
+		dea.date, 
+		dea.population, 
+		vac.new_vaccinations,
+		SUM(TRY_CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_total_vaccinations
+
+FROM CovidProject.dbo.CovidDeaths$ dea
+
+JOIN CovidProject.dbo.CovidVaccinations$ vac
+
+	ON dea.location = vac.location
+	AND dea.date = vac.date
+
+WHERE dea.continent IS NOT NULL
+)
+
+SELECT *, (rolling_total_vaccinations/population)*100 AS PercentageOfPeopleVaccinated
+FROM POPvsVAC
 ```
