@@ -45,9 +45,74 @@ SELECT
     (MAX(TRY_CONVERT(bigint, total_cases)) * 100.0) / NULLIF(MAX(TRY_CONVERT(bigint, population)), 0) AS PopulationPercentage
 FROM
     CovidProject.dbo.CovidDeaths$
---WHERE location LIKE '%states%'
+
 WHERE Continent is not null
+
 GROUP BY Continent
+
 ORDER BY  PopulationPercentage DESC;
+
+```
+### Countries with Highest Infection Rate
+
+``` SQL
+SELECT
+    location,
+	continent,
+    population,
+   MAX(TRY_CONVERT(bigint, total_cases)) AS HighestInfectionCount,
+   MAX((TRY_CONVERT(bigint, total_cases) * 100.0) / NULLIF(TRY_CONVERT(bigint, population), 0)) AS PercentPopulationInfected
+FROM
+    CovidProject.dbo.CovidDeaths$
+WHERE continent is not null
+
+GROUP BY location, continent, population
+
+ORDER BY
+    PercentPopulationInfected DESC;
+```
+
+### Continent Death Count
+
+
+``` SQL
+SELECT continent,
+		SUM(TRY_CONVERT(bigint, total_deaths)) as TotalDeathCount
+FROM
+    CovidProject.dbo.CovidDeaths$
+
+WHERE continent is not null AND date = '04/30/2021'
+
+GROUP BY continent		
+
+ORDER BY
+    TotalDeathCount DESC;
+```
+
+### Global Numbers
+
+``` SQL
+SELECT 
+		SUM(TRY_CONVERT(bigint, total_cases)) AS Total_Cases,
+		SUM(TRY_CONVERT(bigint, total_deaths)) AS Total_Deaths,
+		CASE
+			WHEN SUM(TRY_CONVERT(bigint, total_cases)) = 0 THEN NULL
+			ELSE (SUM(TRY_CONVERT(bigint, total_deaths)) * 100.0) / NULLIF(SUM(TRY_CONVERT(bigint, total_cases)), 0)
+			END AS Death_Percentage
+
+FROM
+    CovidProject.dbo.CovidDeaths$	
+
+WHERE continent is not null AND date = '04/30/2021'
+
+ORDER BY 1,2
+```
+
+
+``` SQL
+
+```
+
+``` SQL
 
 ```
