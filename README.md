@@ -16,3 +16,38 @@
 - Not all countries have a well-established health system, and reporting can be highly unreliable. This can lead to discrepancies and inaccuracies in the data.
 - The actual death toll from COVID-19 is likely to be higher than the number of confirmed deaths due to limited testing and problems in the attribution of the cause of death. The difference between reported confirmed deaths and actual deaths varies by country.
 - How COVID-19 deaths are recorded may differ between countries. For example, some countries may only count hospital deaths, while others also include deaths in homes. This variation in recording practices can affect the comparability of data between countries.
+
+## Data Exploration
+
+### Total Cases vs Total Deaths
+
+``` SQL
+SELECT 
+    location,
+    MAX(TRY_CONVERT(bigint, total_cases)) AS TotalCases,
+    MAX(TRY_CONVERT(bigint, total_deaths)) AS TotalDeaths,
+    (MAX(TRY_CONVERT(bigint, total_deaths)) * 100.0) / NULLIF(MAX(TRY_CONVERT(bigint, total_cases)), 0) AS DeathRate
+FROM
+    CovidProject.dbo.CovidDeaths$
+WHERE Continent is not null AND total_deaths IS NOT NULL
+GROUP BY location
+ORDER BY
+    TotalDeaths DESC;
+```
+
+### Total Cases vs Population
+
+``` SQL
+SELECT 
+    Continent,
+    MAX(TRY_CONVERT(bigint, total_cases)) AS TotalCases,
+    MAX(TRY_CONVERT(bigint, population)) AS TotalPopulation,
+    (MAX(TRY_CONVERT(bigint, total_cases)) * 100.0) / NULLIF(MAX(TRY_CONVERT(bigint, population)), 0) AS PopulationPercentage
+FROM
+    CovidProject.dbo.CovidDeaths$
+--WHERE location LIKE '%states%'
+WHERE Continent is not null
+GROUP BY Continent
+ORDER BY  PopulationPercentage DESC;
+
+```
