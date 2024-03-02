@@ -58,10 +58,10 @@ ORDER BY  PopulationPercentage DESC;
 ``` SQL
 SELECT
     location,
-	continent,
+    continent,
     population,
-   MAX(TRY_CONVERT(bigint, total_cases)) AS HighestInfectionCount,
-   MAX((TRY_CONVERT(bigint, total_cases) * 100.0) / NULLIF(TRY_CONVERT(bigint, population), 0)) AS PercentPopulationInfected
+    MAX(TRY_CONVERT(bigint, total_cases)) AS HighestInfectionCount,
+    MAX((TRY_CONVERT(bigint, total_cases) * 100.0) / NULLIF(TRY_CONVERT(bigint, population), 0)) AS PercentPopulationInfected
 FROM
     CovidProject.dbo.CovidDeaths$
 WHERE continent is not null
@@ -77,7 +77,7 @@ ORDER BY
 
 ``` SQL
 SELECT continent,
-		SUM(TRY_CONVERT(bigint, total_deaths)) as TotalDeathCount
+       SUM(TRY_CONVERT(bigint, total_deaths)) as TotalDeathCount
 FROM
     CovidProject.dbo.CovidDeaths$
 
@@ -112,11 +112,11 @@ ORDER BY 1,2
 ``` SQL
 
 SELECT dea.continent, 
-		dea.location,
-		dea.date, 
-		dea.population, 
-		vac.new_vaccinations,
-		SUM(TRY_CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_total_vaccinations
+       dea.location,
+       dea.date, 
+       dea.population, 
+       vac.new_vaccinations,
+       SUM(TRY_CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_total_vaccinations
 
 FROM CovidProject.dbo.CovidDeaths$ dea
 
@@ -129,6 +129,7 @@ WHERE dea.continent IS NOT NULL
 
 ORDER BY 2,3
 ```
+
 ### Percentage of People Vaccinated
 
 ``` SQL
@@ -136,13 +137,12 @@ WITH POPvsVAC (continent, location, date, population, new_vaccinations, rolling_
 
 AS
 ( 
-SELECT dea.continent, 
-		dea.location,
-		dea.date, 
-		dea.population, 
-		vac.new_vaccinations,
-		SUM(TRY_CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_total_vaccinations
-
+SELECT  dea.continent, 
+	dea.location,
+	dea.date, 
+	dea.population, 
+	vac.new_vaccinations,
+	SUM(TRY_CONVERT(bigint, vac.new_vaccinations)) OVER (PARTITION BY dea.location ORDER BY dea.location, dea.date) AS rolling_total_vaccinations
 FROM CovidProject.dbo.CovidDeaths$ dea
 
 JOIN CovidProject.dbo.CovidVaccinations$ vac
