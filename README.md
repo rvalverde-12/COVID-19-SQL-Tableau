@@ -93,13 +93,12 @@ ORDER BY
 
 ``` SQL
 SELECT 
-		SUM(TRY_CONVERT(bigint, total_cases)) AS Total_Cases,
-		SUM(TRY_CONVERT(bigint, total_deaths)) AS Total_Deaths,
-		CASE
-			WHEN SUM(TRY_CONVERT(bigint, total_cases)) = 0 THEN NULL
-			ELSE (SUM(TRY_CONVERT(bigint, total_deaths)) * 100.0) / NULLIF(SUM(TRY_CONVERT(bigint, total_cases)), 0)
-			END AS Death_Percentage
-
+      SUM(TRY_CONVERT(bigint, total_cases)) AS Total_Cases,
+      SUM(TRY_CONVERT(bigint, total_deaths)) AS Total_Deaths,
+         CASE
+             WHEN SUM(TRY_CONVERT(bigint, total_cases)) = 0 THEN NULL
+                  ELSE (SUM(TRY_CONVERT(bigint, total_deaths)) * 100.0) / NULLIF(SUM(TRY_CONVERT(bigint, total_cases)), 0)
+         END AS Death_Percentage
 FROM
     CovidProject.dbo.CovidDeaths$	
 
