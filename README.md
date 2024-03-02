@@ -160,6 +160,4 @@ FROM POPvsVAC
 
 ## Tableau
 
-You can access the dashboard on You can access the dataset from the [**Tableau Public**]([https://ourworldindata.org/covid-deaths](https://public.tableau.com/views/COVID-19WorldDeathsandInfectionsReportedApril302021/Dashboard1?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link)https://public.tableau.com/views/COVID-19WorldDeathsandInfectionsReportedApril302021/Dashboard1?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link)
-
-
+You can access the dashboard on You can access the dataset from the [**Tableau Public**](https://public.tableau.com/views/COVID-19WorldDeathsandInfectionsReportedApril302021/Dashboard1?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link)
